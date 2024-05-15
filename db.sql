@@ -7,8 +7,9 @@ CREATE TABLE IF NOT EXISTS `market_retailers` (
   `retailer_store` INT UNSIGNED NOT NULL,
   `retailer_admin` BOOLEAN NOT NULL DEFAULT '0',
   `retailer_active` BOOLEAN NOT NULL DEFAULT '1',
-  `retailer_approved` BOOLEAN NOT NULL DEFAULT '0',
-  `retailer_approved_by` INT UNSIGNED NOT NULL,
+--   `retailer_approved` BOOLEAN NOT NULL DEFAULT '0',
+  `retailer_approved_by` INT UNSIGNED  DEFAULT NULL,
+  `retailer_approved` DATETIME DEFAULT NULL,
   `retailer_register` DATETIME NOT NULL,
   PRIMARY KEY (`retailer_id`),
   KEY (`retailer_store`) REFERENCES (`stores`),
@@ -21,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `market_stores` (
   `store_code` VARCHAR(12) NOT NULL,
   `store_name` VARCHAR(120) NOT NULL,
   `store_official_name` VARCHAR(120) NOT NULL,
-  `store_cr` VARCHAR(12) NOT NULL,
-  `store_cr_photo` VARCHAR(64) NOT NULL,
+  `store_cr` VARCHAR(20) NOT NULL,
+  `store_cr_photo` VARCHAR(64) DEFAULT NULL,
   `store_tax` VARCHAR(24) NOT NULL,
   `store_phone` VARCHAR(24) NOT NULL,
   `store_mobile` VARCHAR(24) NOT NULL,
@@ -34,10 +35,10 @@ CREATE TABLE IF NOT EXISTS `market_stores` (
   `store_status` INT UNSIGNED DEFAULT 1,
   `store_cerated` DATETIME NOT NULL,
   PRIMARY KEY (`store_id`),
-  FOREIGN KEY (`store_admin`) REFERENCES (`retailers`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS `market_categories` (
   `category_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -52,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `market_subcategories` (
   `subcategory_name` VARCHAR(1024) NOT NULL,
   `subcategory_cat` VARCHAR(1024) NOT NULL,
   PRIMARY KEY (`subcategory_id`),
-  FOREIGN KEY (`subcategory_cat`) REFERENCES `market_categories`(`category_id`)
+  FOREIGN KEY (`subcategory_cat`) REFERENCES `market_categories`(`category_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -73,15 +74,33 @@ CREATE TABLE IF NOT EXISTS `market_products` (
   `product_delete` BOOLEAN DEFAULT '0',
   `product_cerated` DATETIME NOT NULL,
   PRIMARY KEY (`product_id`),
-  KEY `product_category` REFERENCES (`product_categories`),
+  FOREIGN KEY (`product_category`) REFERENCES `market_subcategories`(`subcategory_id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
--- photos id, file(64), create, prod_id
--- views id, client, product, time
+CREATE TABLE IF NOT EXISTS `market_product_photos` (
+  `photo_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `photo_file` VARCHAR(64) NOT NULL,
+  `photo_product` BIGINT UNSIGNED NOT NULL,
+  `photo_cerated` DATETIME NOT NULL,
+  PRIMARY KEY (`photo_id`),
+  FOREIGN KEY (`photo_product`) REFERENCES `market_products`(`product_id`),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- -----------------------------
+-- -------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `market_product_views` (
+  `view_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `view_customer` INT UNSIGNED NOT NULL,
+  `view_product` BIGINT UNSIGNED NOT NULL,
+  `view_cerated` DATETIME NOT NULL,
+  PRIMARY KEY (`view_id`),
+  FOREIGN KEY (`view_customer`) REFERENCES `customers`(`customer_id`),
+  FOREIGN KEY (`view_product`) REFERENCES `market_products`(`product_id`),
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- -------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `market_orders` (
   `order_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -98,8 +117,7 @@ CREATE TABLE IF NOT EXISTS `market_orders` (
   `order_approved` DATETIME DEFAULT NULL,
   `order_deliverd` DATETIME DEFAULT NULL,
   PRIMARY KEY (`order_id`),
-  KEY `order_code` REFERENCES (`order_code`),
-  KEY `order_customerId` REFERENCES (`customers`),
+  FOREIGN KEY (`order_customer`) REFERENCES `customers`(`customer_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -113,6 +131,6 @@ CREATE TABLE IF NOT EXISTS  `market_order_items` (
   `orderItem_disc` DECIMAL(6,2) NOT NULL,
   `orderItem_total` DECIMAL(12, 2) NOT NULL,
   PRIMARY KEY (`orderItem_id`),
-  KEY `orderItem_orderId` REFERENCES (`orders`),
-  KEY `orderItem_productId` REFERENCES (`products`)
+  KEY `orderItem_order` REFERENCES `market_orders`(`order_id`),
+  KEY `orderItem_product` REFERENCES `market_products`(`product_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
