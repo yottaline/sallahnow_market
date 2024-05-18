@@ -57,7 +57,7 @@ class Market_retailer extends Authenticatable
     {
         if($id) return self::where('retailer_id', $id)->update($param) ? $id : false;
         $status = self::create($param);
-        return $status ? $status->id : false;
+        return $status ? $status->retailer_id : false;
     }
 
 

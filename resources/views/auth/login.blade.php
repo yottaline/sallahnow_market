@@ -27,6 +27,10 @@
                                     href="{{ route('password.request') }}" target="_self">Forgot your
                                     password?</a></small>
                         @endif
+                        <small class="d-block my-3"><i
+                                class="bi bi-person-square
+                            text-muted"></i> <a
+                                href="{{ route('register') }}" target="_self">I dont have an account</a></small>
 
                         <input type="hidden" name="token" value="0">
                         <input type="hidden" name="action" value="login_form">

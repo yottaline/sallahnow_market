@@ -13,14 +13,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function() {
     return view('dashboard');
-})->name('dashboard')->middleware('auth');
+})->middleware(['auth'])->name('dashboard');
+
+
+Route::prefix('locations')->group(function(){
+    Route::get('/', 'LocationController@index');
+    Route::post('get_location', 'LocationController@getLocation');
+    Route::post('load', 'LocationController@load');
+});
+Route::post('retailer_register', 'MarketRetailerController@register');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
