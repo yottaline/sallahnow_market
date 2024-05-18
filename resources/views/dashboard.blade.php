@@ -1,1 +1,3 @@
-wwj
+@extends('index')
+@section('content')
+@endsection

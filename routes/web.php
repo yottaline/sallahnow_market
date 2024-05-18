@@ -18,6 +18,23 @@ Route::get('/', function () {
 })->middleware(['auth'])->name('dashboard');
 
 
+Route::middleware('auth')->group(function(){
+    // categories route
+    Route::prefix('categories')->group(function(){
+        Route::get('/', 'MarketCategoryController@index');
+        Route::post('load', 'MarketCategoryController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketCategoryController@submit');
+    });
+
+    // subcategories
+    Route::prefix('subcategories')->group(function(){
+        Route::get('/', 'MarketSubcategoryController@index');
+        Route::post('load', 'MarketSubcategoryController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketSubcategoryController@submit');
+    });
+});
+
+
 Route::prefix('locations')->group(function(){
     Route::get('/', 'LocationController@index');
     Route::post('get_location', 'LocationController@getLocation');
