@@ -31,6 +31,17 @@ Route::middleware('auth')->group(function(){
         Route::get('/', 'MarketSubcategoryController@index');
         Route::post('load', 'MarketSubcategoryController@load');
         Route::match(['post', 'put'], 'submit', 'MarketSubcategoryController@submit');
+
+    });
+
+    // products
+    Route::prefix('products')->group(function(){
+        Route::get('/', 'MarketProductController@index');
+        Route::post('load', 'MarketProductController@load');
+        Route::get('get_subCategory/{id}', 'MarketProductController@getSubCategory');
+        Route::match(['post', 'put'], 'submit', 'MarketProductController@submit');
+        Route::put('change_status', 'MarketProductController@changeStatus');
+        Route::put('delete', 'MarketProductController@delete');
     });
 });
 

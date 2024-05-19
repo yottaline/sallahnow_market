@@ -31,7 +31,7 @@ class Market_store extends Model
 
     public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
-        // $stores = self::join('market_retailers', 'market_stores.store_id', 'market_retailers.retailer_store')->limit($limit);
+        // $stores = self::join('market_retailers', 'store_id', 'retailer_store')->limit($limit);
         $stores = self::limit($limit);
 
         if (isset($params['q']))
@@ -52,11 +52,16 @@ class Market_store extends Model
 
         return $id ? $stores->first() : $stores->get();
     }
-
     public static function submit($param, $id)
     {
         if($id) return self::where('store_id', $id)->update($param) ? $id : false;
         $status = self::create($param);
         return $status ? $status->id : false;
+    }
+
+    public static function getRetailerStore()
+    {
+        return self::join('market_retailers', 'store_id', 'retailer_store')->where('retailer_id', auth()->user()->retailer_id)->first();
+
     }
 }

@@ -24,18 +24,13 @@
                      <i class="bi bi-grid-3x3-gap text-secondary me-2"></i><b>Sub Categories</b>
                  </a>
              </li>
-             {{--
+
              <li class="list-group-item nav-articles">
-                 <a class="link-dark d-block" href="/compatibilities/">
-                     <i class="bi bi-file-earmark-richtext text-secondary me-2"></i><b>Compatibilities</b>
+                 <a class="link-dark d-block" href="/products/">
+                     <i class="bi bi-box-seam text-secondary me-2"></i><b>Products</b>
                  </a>
              </li>
 
-             <li class="list-group-item nav-articles">
-                 <a class="link-dark d-block" href="/suggestions/">
-                     <i class="bi bi-lightbulb text-secondary me-2"></i><b>Suggestions</b>
-                 </a>
-             </li> --}}
 
              {{-- <li class="list-group-item nav-news">
                  <a class="link-dark d-block" href="">
