@@ -104,7 +104,6 @@
                         </div>
 
                         @include('layouts.loade')
-
                     </div>
                 </div>
             </div>

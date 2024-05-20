@@ -31,12 +31,12 @@
                  </a>
              </li>
 
-
-             {{-- <li class="list-group-item nav-news">
-                 <a class="link-dark d-block" href="">
-                     <i class="bi bi-newspaper text-secondary me-2"></i><b>News</b>
+             <li class="list-group-item nav-articles">
+                 <a class="link-dark d-block" href="/orders/">
+                     <i class="bi bi-truck text-secondary me-2"></i><b>Orders</b>
                  </a>
-             </li> --}}
+             </li>
+
 
 
 

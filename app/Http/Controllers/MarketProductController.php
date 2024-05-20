@@ -27,7 +27,7 @@ class MarketProductController extends Controller
 
     public function load(Request $request)
     {
-        $params   = $request->q ? ['q', $request->q] : [];
+        $params   = $request->q ? ['q' => $request->q] : [];
         $limit   = $request->limit;
         $lastId  = $request->last_id;
 
@@ -122,6 +122,13 @@ class MarketProductController extends Controller
         $param = ['product_delete' => 1];
         $result  = Market_product::submit($param, $id);
         echo json_encode(['status' => boolval($result)]);
+    }
+
+    public function getProduct(Request $request)
+    {
+        $product_name = $request->product;
+        $param[] = ['product_name', 'like', '%' . $product_name . '%'];
+        echo json_encode(Market_product::fetch(0, $param));
     }
 
     private function uniqidReal($lenght = 12)

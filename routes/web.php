@@ -42,6 +42,14 @@ Route::middleware('auth')->group(function(){
         Route::match(['post', 'put'], 'submit', 'MarketProductController@submit');
         Route::put('change_status', 'MarketProductController@changeStatus');
         Route::put('delete', 'MarketProductController@delete');
+        Route::post('get_product', 'MarketProductController@getProduct');
+    });
+
+    // orders
+    Route::prefix('orders')->group(function(){
+        Route::get('/', 'MarketOrderController@index');
+        Route::post('load', 'MarketOrderController@load');
+        Route::match(['post', 'put'], 'submit', 'MarketOrderController@submit');
     });
 });
 

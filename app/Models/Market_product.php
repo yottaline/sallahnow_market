@@ -26,7 +26,7 @@ class Market_product extends Model
         'product_cerated'
     ];
 
-    public static function fetch($id =0, $params = null, $limit = null, $lastId = null)
+    public static function fetch($id = 0, $params = null, $limit = null, $lastId = null)
     {
         $products = self::join('market_stores', 'product_store', 'store_id')
         ->join('market_categories', 'category_id', 'product_category')
@@ -50,6 +50,15 @@ class Market_product extends Model
         if($id) $products->where('product_id', $id);
 
         return $id ? $products->first() : $products->get();
+    }
+
+
+    public static function fetchByIds($ids)
+    {
+        $products = self::join('market_stores', 'product_store', 'store_id')
+        ->join('market_categories', 'category_id', 'product_category')
+        ->join('market_subcategories', 'subcategory_id', 'product_subcategory')->where('product_delete', 0)->whereIn('product_id', $ids)->get();
+        return $products;
     }
 
     public static function submit($param, $id)

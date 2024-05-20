@@ -285,3 +285,20 @@
             });
     });
 </script>
+
+{{-- <div class="modal fade modal-sm" id="delete_product" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="image-container">
+                    <img src="image1.jpg" alt="Image 1">
+                    <img src="image2.jpg" alt="Image 2">
+                    <img src="image3.jpg" alt="Image 3">
+                    <img src="image4.jpg" alt="Image 4">
+                    <img src="image5.jpg" alt="Image 5">
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}
