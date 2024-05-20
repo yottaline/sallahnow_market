@@ -31,6 +31,10 @@ class MarketProductController extends Controller
         $limit   = $request->limit;
         $lastId  = $request->last_id;
 
+        if($request->price) $params[]       = ['product_price',  $request->price];
+        if($request->category) $params[]    = ['product_category', $request->category];
+        if($request->subcategory) $params[] = ['product_subcategory', $request->subcategory];
+
         echo json_encode(Market_product::fetch(0, $params, $limit, $lastId));
     }
 
@@ -74,7 +78,7 @@ class MarketProductController extends Controller
         if(boolval($product))
         {
             $images = $request->file('image');
-            // if ($images && $images->count() > 0) {
+            if ($images && count($images) > 0) {
                 foreach ($images as $image) {
                     $fileName = $this->uniqidReal(8) . '.' . $image->getClientOriginalExtension();
                     $image->move('images/product/', $fileName);
@@ -87,7 +91,7 @@ class MarketProductController extends Controller
 
                     $result = Market_product_photo::submit($params, null);
                 }
-            // }
+            }
         }
 
         echo json_encode([
@@ -117,10 +121,7 @@ class MarketProductController extends Controller
         $id = $request->id;
         $param = ['product_delete' => 1];
         $result  = Market_product::submit($param, $id);
-        echo json_encode([
-            'status' => boolval($result),
-            'data'  => $result ? Market_product::fetch($id) : []
-        ]);
+        echo json_encode(['status' => boolval($result)]);
     }
 
     private function uniqidReal($lenght = 12)
