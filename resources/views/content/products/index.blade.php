@@ -11,9 +11,15 @@
             <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
+                        {{-- price --}}
+                        <div class="mb-3">
+                            <label for="filter-price">Price</label>
+                            <input type="text" class="form-control" name="price" maxlength="24" id="filter-price"
+                                required />
+                        </div>
                         {{-- category --}}
                         <div class="mb-3">
-                            <label>Categories<b class="text-danger">&ast;</b></label>
+                            <label>Categories</label>
                             <select id="filter-caetgories" class="form-select">
                                 <option value="0">-- SELECT CATEEGOY NAME --</option>
                                 <option data-ng-repeat="categoy in categories" data-ng-value="categoy.category_id"
@@ -23,8 +29,8 @@
                         </div>
                         {{-- subcategory --}}
                         <div class="mb-3">
-                            <label>Sub categories<b class="text-danger">&ast;</b></label>
-                            <select id="filter-store" class="form-select">
+                            <label>Sub categories</label>
+                            <select id="filter-subcaetgories" class="form-select">
                                 <option value="0">-- SELECT SUB CATEGORY NAME --</option>
                                 <option data-ng-repeat="sub in subcategories" data-ng-value="sub.subcategory_id"
                                     data-ng-bind="jsonParse(sub.subcategory_name)['en']">
@@ -60,7 +66,7 @@
                                     <tr>
                                         <th class="text-center">#</th>
                                         <th class="text-center">Product Name</th>
-                                        <th class="text-center">Store Name</th>
+                                        {{-- <th class="text-center">Store Name</th> --}}
                                         <th class="text-center">Category Name</th>
                                         <th class="text-center">SubCategory Name</th>
                                         <th class="text-center">Price</th>
@@ -74,7 +80,7 @@
                                         <td data-ng-bind="product.product_code"
                                             class="text-center small font-monospace text-uppercase"></td>
                                         <td class="text-center" data-ng-bind="product.product_name"></td>
-                                        <td class="text-center" data-ng-bind="product.store_name"></td>
+                                        {{-- <td class="text-center" data-ng-bind="product.store_name"></td> --}}
                                         <td class="text-center" data-ng-bind="jsonParse(product.category_name).en"></td>
                                         <td class="text-center" data-ng-bind="jsonParse(product.subcategory_name).en"></td>
                                         <td class="text-center" data-ng-bind="product.product_price"></td>
@@ -147,6 +153,9 @@
                 var request = {
                     q: $scope.q,
                     last_id: $scope.last_id,
+                    price: $('#filter-price').val(),
+                    category: $('#filter-caetgories').val(),
+                    subcategory: $('#filter-subcaetgories').val(),
                     limit: limit,
                     _token: '{{ csrf_token() }}'
                 };

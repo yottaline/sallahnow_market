@@ -117,8 +117,7 @@
                                     $('#productForm').modal('hide');
                                     scope.$apply(() => {
                                         if (scope.updateProduct === false) {
-                                            // scope.list.unshift(response.data);
-                                            scope.list = response.data
+                                            scope.list.unshift(response.data);
                                             clsForm();
                                             // scope.dataLoader(true);
                                         } else {
