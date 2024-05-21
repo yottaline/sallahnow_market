@@ -29,7 +29,7 @@ class MarketOrderController extends Controller
         $lastId = $request->last_id;
 
         if ($request->status) $params[] = ['order_status', $request->status];
-        if ($request->date) $params[] = ['order_date', 'like', "%{$request->date}%"];
+        if ($request->date) $params[] = ['order_create', 'like', "%{$request->date}%"];
 
         echo json_encode(Market_order::fetch(0, $params, $limit, $lastId));
     }

@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function(){
         Route::post('change_status', 'MarketOrderController@updateStatus');
         Route::get('view/{order_id}', 'MarketOrderController@viewOrder');
     });
+
+    Route::get('profile', 'MarketRetailerController@profile');
 });
 
 
@@ -63,10 +65,10 @@ Route::prefix('locations')->group(function(){
 });
 Route::post('retailer_register', 'MarketRetailerController@register');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 require __DIR__.'/auth.php';

@@ -10,12 +10,22 @@
             </div>
 
             <div id="login-card" class="card border-0 mt-5 bg-muted-8">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <div class="card-body">
                     <form id="login-form" id="loginFrom" action="#" method="post" role="form">
                         @csrf
                         <div class="mb-3 position-relative">
                             <label for="login-mobile">Mobile<b class="text-danger">&ast;</b></label>
-                            <input id="login-mobile" name="mobile" type="text" class="form-control" required>
+                            <input id="login-mobile" name="mobile" type="text" value="{{ old('mobile') }}"
+                                class="form-control" required>
                         </div>
                         <div class="mb-3 position-relative">
                             <label for="login-password">Password<b class="text-danger">&ast;</b></label>

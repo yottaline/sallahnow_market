@@ -50,7 +50,7 @@ class LoginRequest extends FormRequest
         {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
-                'mobile' => 'not account']);
+                'mobile' => 'You do not have an account']);
         }
         else{
             $password = Hash::check(request('password'), $retailer->retailer_password);
@@ -58,7 +58,7 @@ class LoginRequest extends FormRequest
             if(!$password){
                 RateLimiter::hit($this->throttleKey());
                 throw ValidationException::withMessages([
-                    'password' => 'password not ',]);
+                    'password' => 'The password is incorrect',]);
             }else{
                 if($retailer->retailer_approved == 1){
                     RateLimiter::clear($this->throttleKey());

@@ -33,6 +33,8 @@ class MarketRetailerController extends Controller
             'address'           => 'required'
         ]);
 
+        $id = $request->id;
+
         $store_param = [
             'store_name'   => $request->store_name,
             'store_code'   => $this->uniqidReal(8),
@@ -67,6 +69,10 @@ class MarketRetailerController extends Controller
 
     }
 
+    public function profile()
+    {
+        return view('profile.index');
+    }
     private function uniqidReal($lenght = 12)
     {
         if (function_exists("random_bytes")) {
