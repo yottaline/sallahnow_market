@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Market_order;
+use App\Models\Market_order_item;
 use App\Models\Market_product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,6 +28,9 @@ class MarketOrderController extends Controller
         $limit  = $request->limit;
         $lastId = $request->last_id;
 
+        if ($request->status) $params[] = ['order_status', $request->status];
+        if ($request->date) $params[] = ['order_date', 'like', "%{$request->date}%"];
+
         echo json_encode(Market_order::fetch(0, $params, $limit, $lastId));
     }
 
@@ -49,7 +53,8 @@ class MarketOrderController extends Controller
                     'orderItem_productPrice' => $p->product_price,
                     'orderItem_subtotal'     => $subtotal,
                     'orderItem_disc'         => $p->product_disc,
-                    'orderItem_total'        => $total
+                    'orderItem_total'        => $total,
+                    'orderItem_qty'               => $qty[$indx]
                 ];
                 $ordSubtotal    += $subtotal;
                 $orderTotalDisc += $total - $subtotal;
@@ -76,6 +81,29 @@ class MarketOrderController extends Controller
 
     }
 
+    public function viewOrder($orderId)
+    {
+        $order = Market_order::fetch($orderId);
+        $param[] = ['market_orders.order_id', $orderId];
+        $items  = Market_order_item::fetch(0,$param);
+        echo json_encode(['order' => $order, 'items' => $items]);
+
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $col = in_array($request->status, [2, 3])
+            ? 'order_exec'
+            : ($request->status == 4 ? 'order_approved' : 'order_deliverd');
+        $param = [
+            'order_status' => $request->status,
+            $col => Carbon::now(),
+        ];
+        $result =  Market_order::submit($request->id, $param);
+        echo json_encode([
+            'status'  => boolval($result),
+        ]);
+    }
 
     private function uniqidReal($lenght = 12)
     {

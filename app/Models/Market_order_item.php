@@ -16,7 +16,8 @@ class Market_order_item extends Model
         'orderItem_productPrice',
         'orderItem_subtotal',
         'orderItem_disc',
-        'orderItem_total'
+        'orderItem_total',
+        'orderItem_qty'
     ];
 
     public static function fetch($id = 0, $params = null)

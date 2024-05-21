@@ -48,35 +48,24 @@
     </style>
     <div class="container-fluid" data-ng-app="myApp" data-ng-controller="myCtrl">
         <div class="row">
-            <div class="col-12 col-sm-4 col-lg-2">
+            <div class="col-12 col-sm-4 col-lg-3">
                 <div class="card card-box">
                     <div class="card-body">
-                        {{-- <div class="mb-3">
-                            <label for="roleFilter">اسم التاجر</label>
+                        <div class="mb-3">
+                            <label for="roleFilter">Customer Name</label>
                             <input type="text" class="form-control" id="filter-name">
                         </div>
 
                         <div class="mb-3">
-                            <label for="roleFilter">تاريخ الطلب</label>
+                            <label for="roleFilter">Order Date</label>
                             <input type="text" id="inputBirthdate" class="form-control text-center text-monospace"
                                 id="filter-date">
                         </div>
-
-                        <div class="mb-3">
-                            <label for="roleFilter">حالة الطلب</label>
-                            <select id="filter-status" class="form-select">
-                                <option value="0">-----</option>
-                                <option value="3">في الانتظار</option>
-                                <option value="4">تم التاكيد</option>
-                                <option value="2">تم اللغاها</option>
-                                <option value="5">تم تسليمها</option>
-                            </select>
-                        </div> --}}
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-sm-8 col-lg-10">
+            <div class="col-12 col-sm-8 col-lg-9">
                 <div class="card card-box">
                     <div class="card-body">
                         <div class="d-flex">
@@ -127,12 +116,10 @@
                                                 class="btn btn-outline-success btn-circle bi bi-check"
                                                 ng-click="opt($index, 4)"></button>
                                             <button ng-if="order.order_status == 4"
-                                                class="btn btn-outline-success btn-circle bi bi-send"
+                                                class="btn btn-outline-success btn-circle bi bi-truck"
                                                 ng-click="opt($index, 5)"></button>
-
-
-                                            <a href="/orders/view/<%order.order_id%>"
-                                                class="btn btn-outline-dark btn-circle bi bi-eye" target="_blank"></a>
+                                            <button class="btn btn-outline-dark btn-circle bi bi-eye"
+                                                data-ng-click="viewDetails(order)"></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -413,25 +400,27 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">صورة المنتج</th>
-                                    <th scope="col">اسم المنتج</th>
-                                    <th scope="col">الكمية</th>
-                                    <th scope="col">عدد الحزمة</th>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr data-ng-repeat="details in orderDetails">
                                     <th scope="row"></th>
-                                    <td>
-                                        <img alt=""
-                                            ng-src="{{ asset('/images/products/') }}/<% details.product_photo %>"
-                                            width="30px">
-                                    </td>
                                     <td data-ng-bind="details.product_name"></td>
-                                    <td data-ng-bind="details.orderproduct_qty"></td>
-                                    <td data-ng-bind="details.orderproduct_pck"></td>
+                                    <td data-ng-bind="details.orderItem_subtotal"></td>
+                                    <td data-ng-bind="details.orderItem_subtotal"></td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3">
+                                        Total amount
+                                    </th>
+                                    <th data-ng-bind="orDe.order_subtotal"></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -461,6 +450,7 @@
             $scope.products = [];
             $scope.orderDisc = 0;
             $scope.orderDetails = [];
+            $scope.orDe = [];
             $scope.last_id = 0;
             $scope.jsonParse = (str) => JSON.parse(str);
             $scope.customers = <?= json_encode($customers) ?>;
@@ -476,9 +466,8 @@
 
                 $('.loading-spinner').show();
                 var request = {
-                    status: $('#filter-status').val(),
                     date: $('#filter-date').val(),
-                    r_name: $('#filter-name').val(),
+                    c_name: $('#filter-name').val(),
                     q: $scope.q,
                     last_id: $scope.last_id,
                     limit: limit,
@@ -505,18 +494,19 @@
             };
             $scope.opt = function(indx, status) {
                 Swal.fire({
-                    text: "هل تريد تغيير حالة الطالب",
+                    text: "Do you want to change your student status?",
                     icon: "info",
                     showCancelButton: true,
                 }).then((result) => {
                     if (!result.isConfirmed) return;
-                    $.post('/orders/update_status', {
+                    $.post('/orders/change_status', {
                         id: $scope.list[indx].order_id,
                         status: status,
                         _token: "{{ csrf_token() }}",
                     }, function(response) {
                         if (response.status) {
-                            toastr.success('تم تغير الحالةالطلب  بنجاح');
+                            toastr.success(
+                                'The status of the request has been changed successfully');
                             $('#set_deliverd').modal('hide');
                             scope.$apply(() => {
                                 if (scope.updateOrders === false) {
@@ -531,11 +521,13 @@
                 });
             }
 
-            $scope.setDisc = (order) => {
+            $scope.viewDetails = (order) => {
                 $.get("/orders/view/" + order.order_id, function(data) {
                     $('.perm').show();
                     scope.$apply(() => {
-                        scope.orderDetails = data;
+
+                        scope.orderDetails = data.items;
+                        scope.orDe = data.order;
                         console.log(data)
                         $('#edit_disc').modal('show');
                     });
@@ -558,309 +550,6 @@
             $scope.dataLoader();
             scope = $scope;
         });
-
-        $(function() {
-            $('#set_canceled form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم تغير الحالة بنجاح');
-                        $('#set_canceled').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-        })
-
-        $(function() {
-            $('#set_placed form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم تغير الحالة بنجاح');
-                        $('#set_placed').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-
-            $('#edit_disc form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم اضافة الخصم بنجاح');
-                        $('#edit_disc').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-        })
-
-        $(function() {
-            $('#set_approved form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم عملية انهاء الطلب  بنجاح');
-                        $('#set_approved').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-
-            $('#edit_disc form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم اضافة الخصم بنجاح');
-                        $('#edit_disc').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-        })
-
-        $(function() {
-            $('#set_deliverd form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم عملية التسليم الطلب  بنجاح');
-                        $('#set_deliverd').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-
-            $('#edit_disc form').on('submit', function(e) {
-                e.preventDefault();
-                var form = $(this),
-                    formData = new FormData(this),
-                    action = form.attr('action'),
-                    method = form.attr('method'),
-                    controls = form.find('button, input'),
-                    spinner = $('#locationModal .loading-spinner');
-                spinner.show();
-                controls.prop('disabled', true);
-                $.ajax({
-                    url: action,
-                    type: method,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                }).done(function(data, textStatus, jqXHR) {
-                    var response = JSON.parse(data);
-                    if (response.status) {
-                        toastr.success('تم اضافة الخصم بنجاح');
-                        $('#edit_disc').modal('hide');
-                        scope.$apply(() => {
-                            if (scope.updateOrders === false) {
-                                scope.list.unshift(response.data);
-                                scope.dataLoader(true);
-                            } else {
-                                scope.list[scope.updateOrders] = response.data;
-                                scope.dataLoader(true);
-                            }
-                        });
-                    } else toastr.error(response.message);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    toastr.error(response.message);
-                    controls.log(jqXHR.responseJSON.message);
-                    $('#useForm').modal('hide');
-                }).always(function() {
-                    spinner.hide();
-                    controls.prop('disabled', false);
-                });
-
-            })
-        })
-
 
         $(function() {
             $('#nvSearch').on('submit', function(e) {

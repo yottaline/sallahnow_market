@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function(){
         Route::get('/', 'MarketOrderController@index');
         Route::post('load', 'MarketOrderController@load');
         Route::match(['post', 'put'], 'submit', 'MarketOrderController@submit');
+        Route::post('change_status', 'MarketOrderController@updateStatus');
+        Route::get('view/{order_id}', 'MarketOrderController@viewOrder');
     });
 });
 
