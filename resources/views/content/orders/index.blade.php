@@ -409,7 +409,7 @@
                                 <tr data-ng-repeat="details in orderDetails">
                                     <th scope="row"></th>
                                     <td data-ng-bind="details.product_name"></td>
-                                    <td data-ng-bind="details.orderItem_subtotal"></td>
+                                    <td data-ng-bind="details.orderItem_qty"></td>
                                     <td data-ng-bind="details.orderItem_subtotal"></td>
                                 </tr>
                             </tbody>
