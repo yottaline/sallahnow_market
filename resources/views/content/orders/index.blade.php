@@ -58,7 +58,7 @@
 
                         <div class="mb-3">
                             <label for="roleFilter">Order Date</label>
-                            <input type="text" id="inputBirthdate" class="form-control text-center text-monospace"
+                            <input type="text" id="filterOrderDate" class="form-control text-center text-monospace"
                                 id="filter-date">
                         </div>
                     </div>
@@ -104,8 +104,7 @@
                                         <td data-ng-bind="order.order_create" class="text-center"></td>
                                         <td class="text-center"><% order.order_disc %>%</td>
                                         <td data-ng-bind="order.order_subtotal" class="text-center"></td>
-
-                                        <td class="col-fit">
+                                        <td class="text-center">
                                             <button ng-if="order.order_status == 1"
                                                 class="btn btn-outline-danger btn-circle bi bi-x"
                                                 ng-click="opt($index, 2)"></button>
@@ -118,6 +117,8 @@
                                             <button ng-if="order.order_status == 4"
                                                 class="btn btn-outline-success btn-circle bi bi-truck"
                                                 ng-click="opt($index, 5)"></button>
+                                        </td>
+                                        <td class="col-fit">
                                             <button class="btn btn-outline-dark btn-circle bi bi-eye"
                                                 data-ng-click="viewDetails(order)"></button>
                                         </td>
@@ -372,7 +373,7 @@
                             })
 
                             $(function() {
-                                $("#inputBirthdate").datetimepicker($.extend({}, dtp_opt, {
+                                $("#filterOrderDate").datetimepicker($.extend({}, dtp_opt, {
                                     showTodayButton: false,
                                     format: "YYYY-MM-DD",
                                 }));
