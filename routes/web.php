@@ -64,6 +64,8 @@ Route::prefix('locations')->group(function(){
     Route::post('load', 'LocationController@load');
 });
 Route::match(['post', 'put'],'retailer_register', 'MarketRetailerController@register');
+Route::post('change_status', 'MarketRetailerController@ChangeStatus');
+Route::post('retailer_logout', 'MarketRetailerController@logout');
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

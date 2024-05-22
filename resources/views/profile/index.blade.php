@@ -37,10 +37,10 @@
                                 data-ng-bind="retailer.store_mobile"></span></p>
                         <hr>
                         <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="postDelete" name="post_delete"
-                                ng-value="data.post_deleted" data-ng-model="post_delete"
-                                data-ng-change="toggle('post_delete', post_delete)">
-                            <label class="form-check-label" for="postDelete">Blacked Your Account</label>
+                            <input class="form-check-input" type="checkbox" id="retailerStatus" name="retailer_status"
+                                ng-value="retailer.retailer_status" data-ng-model="retailer_status"
+                                data-ng-change="toggle()">
+                            <label class="form-check-label" for="retailerStatus">Blacked Your Account</label>
                         </div>
                     </div>
                 </div>
@@ -251,6 +251,24 @@
                     });
                 }, 'json');
             }
+
+            $scope.toggle = function(target, val) {
+                $.post('/change_status', {
+                    _token: '{{ csrf_token() }}',
+                    id: $scope.retailer.retailer_id,
+                }, function(response) {
+                    if (response.status) {
+                        toastr.success(
+                            "Your account has been created successfully. The account will be activated after 3 minutes"
+                        );
+                        $.post('/retailer_logout', {
+                            _token: '{{ csrf_token() }}',
+                        });
+                        setTimeout(location.replace("./login"), 1000)
+                    } else toastr.error('An error occurred in the operation, try again');
+                }, 'json');
+            };
+
             $scope.dataLoader();
             scope = $scope;
         });

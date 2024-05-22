@@ -6,6 +6,7 @@ use App\Models\Market_retailer;
 use App\Models\Market_store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
@@ -102,6 +103,24 @@ class MarketRetailerController extends Controller
     {
         $retailer = Market_store::getRetailerStore();
         return view('profile.index', compact('retailer'));
+    }
+
+    public function ChangeStatus(Request $request)
+    {
+        $id    = $request->id;
+        $params = ['retailer_approved' => 0];
+        $result = Market_retailer::submit($params, $id);
+        echo json_encode(['status' => boolval($result), 'data' => $result ? Market_retailer::fetch($id) : []]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
     private function uniqidReal($lenght = 12)
     {
