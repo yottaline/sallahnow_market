@@ -30,6 +30,8 @@ class MarketProductController extends Controller
         $params   = $request->q ? ['q' => $request->q] : [];
         $limit   = $request->limit;
         $lastId  = $request->last_id;
+        $store   = Market_store::getRetailerStore();
+        $params[]       = ['product_store',  $store->store_id];
 
         if($request->price) $params[]       = ['product_price',  $request->price];
         if($request->category) $params[]    = ['product_category', $request->category];

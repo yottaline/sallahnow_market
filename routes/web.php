@@ -63,7 +63,7 @@ Route::prefix('locations')->group(function(){
     Route::post('get_location', 'LocationController@getLocation');
     Route::post('load', 'LocationController@load');
 });
-Route::post('retailer_register', 'MarketRetailerController@register');
+Route::match(['post', 'put'],'retailer_register', 'MarketRetailerController@register');
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
