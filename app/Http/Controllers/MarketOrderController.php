@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Market_order;
 use App\Models\Market_order_item;
 use App\Models\Market_product;
+use App\Models\Market_store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,8 @@ class MarketOrderController extends Controller
         $params = $request->q ? ['q' => $request->q] : [];
         $limit  = $request->limit;
         $lastId = $request->last_id;
-
+        $store = Market_store::getRetailerStore();
+        $params[] = ['order_store', $store->store_id];
         if ($request->status) $params[] = ['order_status', $request->status];
         if ($request->date) $params[] = ['order_create', 'like', "%{$request->date}%"];
 
@@ -39,6 +41,8 @@ class MarketOrderController extends Controller
         $ids = explode(',', $request->id);
         $qty = explode(',', $request->qty);
         $disc = explode(',', $request->disc);
+
+        $store = Market_store::getRetailerStore();
 
         $ordSubtotal = $orderTotalDisc = $ordTotal = 0;
         $orderItemParam = [];
@@ -61,6 +65,7 @@ class MarketOrderController extends Controller
                 $ordTotal       += $total;
             }
         }
+
         $orderParam = [
             'order_code'            => $this->uniqidReal(10),
             'order_customer'        => $request->customer_id,
@@ -69,6 +74,7 @@ class MarketOrderController extends Controller
             'order_disc'            => intval($request->orderdisc),
             'order_totaldisc'       => $orderTotalDisc,
             'order_total'           => $ordTotal,
+            'order_store'           => $store->store_id,
             'order_status'          => 1,
             'order_create'          => Carbon::now()
         ];

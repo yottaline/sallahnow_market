@@ -198,7 +198,7 @@
                                             <small class="text-secondary font-monospace"
                                                 data-ng-bind="p.product_code"></small>
                                         </td>
-                                        <td><input type="number" step="1" min="0" name="qty"
+                                        <td><input type="number" step="1" min="1" name="qty"
                                                 class="record-amount font-monospace text-center w-100"
                                                 ng-change="clTotal()" ng-model="p.pecAmount">
                                         </td>
@@ -322,6 +322,17 @@
                                     $(this).val($(this).data('default'));
                                 });
                             });
+
+                            function invRecord(item) {
+                                if ($(`#invitem-${item.product_id}`).length) {
+                                    toastr.info('This item has already been added, modify the quantity on the added item');
+                                    return;
+                                }
+                                item.pecAmount = 1;
+                                item.product_disc = +item.product_disc;
+                                scope.$apply(() => scope.products.push(item));
+                                $("#inv-item-input").val("").focus();
+                            }
 
                             $('#submit').on('click', function(e) {
                                 var cart = {

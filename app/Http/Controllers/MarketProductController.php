@@ -129,7 +129,8 @@ class MarketProductController extends Controller
     public function getProduct(Request $request)
     {
         $product_name = $request->product;
-        $param[] = ['product_name', 'like', '%' . $product_name . '%'];
+        $store = Market_store::getRetailerStore();
+        $param =  [['product_name', 'like', '%' . $product_name . '%'], ['product_store', $store->store_id]];
         echo json_encode(Market_product::fetch(0, $param));
     }
 
