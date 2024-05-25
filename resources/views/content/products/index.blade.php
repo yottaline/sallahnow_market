@@ -104,7 +104,6 @@
                         </div>
 
                         @include('layouts.loade')
-
                     </div>
                 </div>
             </div>
@@ -201,7 +200,7 @@
             var idState = this.value;
             $('#subcategoy').html('');
             $.ajax({
-                url: 'products/get_subCategory/' + idState,
+                url: '/products/get_subCategory/' + idState,
                 type: 'GET',
                 dataType: 'json',
                 success: function(res) {
