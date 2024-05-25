@@ -353,7 +353,7 @@
                                 });
 
                                 $(this).prop('disabled', true);
-                                $.post('/orders/submit/', {
+                                $.post('/orders/submit', {
                                     id: cart.id.join(),
                                     qty: cart.qty.join(),
                                     disc: cart.disc.join(),
