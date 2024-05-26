@@ -137,10 +137,10 @@
                                     id="RetailerName">
                             </div>
                         </div>
-                        {{-- retailer phone --}}
+                        {{-- retailer mobile --}}
                         <div class="col-6">
                             <div class="mb-3">
-                                <label for="retailerPhone">Phone</label>
+                                <label for="retailerPhone">Mobile</label>
                                 <input type="text" class="form-control" name="retaile_phone" maxlength="24" required
                                     id="retailerPhone" />
                             </div>
@@ -179,13 +179,13 @@
                             </div>
                         </div>
                         {{-- store mobile --}}
-                        <div class="col-6">
+                        {{-- <div class="col-6">
                             <div class="mb-3">
                                 <label for="storeMobile">Mobile Store</label>
                                 <input type="text" class="form-control" name="store_mobile" maxlength="24" required
                                     id="storeMobile" />
                             </div>
-                        </div>
+                        </div> --}}
                         {{-- store phine --}}
                         <div class="col-6">
                             <div class="mb-3">
@@ -195,7 +195,7 @@
                             </div>
                         </div>
                         {{-- store tx number --}}
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="mb-3">
                                 <label for="TaxNumber">Tax Number</label>
                                 <input type="text" class="form-control" name="tax_store" maxlength="70"
@@ -206,8 +206,8 @@
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="CrNumber">Commercial Record Number</label>
-                                <input type="text" class="form-control" name="cr_store" maxlength="70"
-                                    id="CrNumber" required />
+                                <input type="text" class="form-control" name="cr_store" maxlength="70" id="CrNumber"
+                                    required />
                             </div>
                         </div>
                         {{-- store cr image --}}
@@ -255,7 +255,7 @@
                         {{-- store arae --}}
                         <div class="col-6">
                             <div class="mb-3">
-                                <label>Arae</label>
+                                <label>Area</label>
                                 <select name="area_id" id="area" class="form-select" required>
                                     <option value="default">-- select area --</option>
                                     <option data-ng-repeat="area in storeModal.areas" data-ng-value="area.location_id"
