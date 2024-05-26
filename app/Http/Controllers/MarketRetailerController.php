@@ -23,7 +23,7 @@ class MarketRetailerController extends Controller
             'retailer_email'    => 'required',
             'store_name'        => 'required',
             'official_name'     => 'required',
-            'store_mobile'      => 'required',
+            // 'store_mobile'      => 'required',
             'store_phone'       => 'required',
             'tax_store'         => 'required',
             'cr_store'          => 'required',
@@ -40,7 +40,7 @@ class MarketRetailerController extends Controller
         // store validate data
         $store_id = $request->store_id;
         $store_phone = $request->store_phone;
-        $store_mobile = $request->store_mobile;
+        // $store_mobile = $request->store_mobile;
 
 
         if (count(Market_retailer::fetch(0, [['retailer_id', '!=', $id], ['retailer_phone', '=', $phone]])))
@@ -56,11 +56,11 @@ class MarketRetailerController extends Controller
             return;
         }
 
-        if ($store_mobile && count(Market_store::fetch(0, [['store_id', '!=', $store_id], ['store_mobile', '=', $store_mobile]])))
-        {
-            echo json_encode(['status' => false,'message' =>  'The mobile number of the store is used']);
-            return;
-        }
+        // if ($store_mobile && count(Market_store::fetch(0, [['store_id', '!=', $store_id], ['store_mobile', '=', $store_mobile]])))
+        // {
+        //     echo json_encode(['status' => false,'message' =>  'The mobile number of the store is used']);
+        //     return;
+        // }
 
 
 
@@ -71,7 +71,7 @@ class MarketRetailerController extends Controller
             'store_cr'            => $request->cr_store,
             'store_tax'           => $request->tax_store,
             'store_phone'         => $request->store_phone,
-            'store_mobile'        => $request->store_mobile,
+            'store_mobile'        => $request->store_mobile ? $request->store_mobile : '12345',
             'store_country'       => $request->country_id,
             'store_state'         => $request->state_id,
             'store_city'          => $request->city_id,

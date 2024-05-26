@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Models\Market_retailer;
+use App\Models\Market_store;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -60,13 +61,14 @@ class LoginRequest extends FormRequest
                 throw ValidationException::withMessages([
                     'password' => 'The password is incorrect',]);
             }else{
-                if($retailer->retailer_approved == 1){
+                $store = Market_store::where('store_id', $retailer->retailer_store)->first();
+                if($store->store_status){
                     RateLimiter::clear($this->throttleKey());
                     Auth::login($retailer);
                 }else{
                     RateLimiter::hit($this->throttleKey());
                 throw ValidationException::withMessages([
-                    'approved' => 'Sorry, your account don`t approved',]);
+                    'approved' => 'Your store is not activated. Please contact technical support',]);
                 }
                 //
             }

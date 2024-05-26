@@ -362,7 +362,7 @@
         });
 
         function locationsLoad(type, parent, callback) {
-            $.post('/locations/load/', {
+            $.post('/locations/load', {
                 type: type,
                 parent: parent,
                 _token: '{{ csrf_token() }}'
